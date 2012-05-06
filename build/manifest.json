@@ -1,0 +1,21 @@
+{
+  "name": "Add to Picplum",
+  "version": "1.0",
+  "background": 
+    { 
+      "scripts": [ 
+        "jquery-1.7.2.min.js",
+        "background.js"
+      ] 
+    },
+  "permissions": [ 
+      "tabs",
+      "contextMenus",
+      "notifications"
+    ],
+  "manifest_version": 2,
+  "page_action": {
+      "default_icon": "icon2.png", 
+      "default_title": "Send this photo to Picplum"
+    }
+}
