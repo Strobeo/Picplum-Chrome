@@ -18,9 +18,7 @@ function checkForValidUrl(tabId, changeInfo, tab) {
 };
 
 // add photo to Picplum
-function  add_photo(tab){
-  
-  
+function add_photo(tab){
   $.post(plum.api_base+'photos', 
     { image_url: plum.dl_url, via: 'web'},
     function(data) {
@@ -35,44 +33,9 @@ function  add_photo(tab){
         notification.cancel();
       }, 3500);
   });
-  
 
-  // $.get(plum.api_base+'user', function(data) {
-  //   var notification = webkitNotifications.createNotification(
-  //     'icon1.png',  // icon url - can be relative
-  //     'Photo added to Picplum',  // notification title
-  //     data.name  // notification body text
-  //   );
-  // 
-  //   // Then show the notification.
-  //   notification.show();
-  //   window.setInterval(function() {
-  //     notification.cancel();
-  //   }, 3500);
-  // });
-  // 
-  // console.log(plum.dl_url)
 }
 
-// $.post('https://www.picplum.com/api/1/photos', 
-//   { image_url: 'https://fbcdn-sphotos-a.akamaihd.net/hphotos-ak-ash3/582033_747992485321_42002206_34075714_1838519744_n.jpg', via: 'fb_send'}
-// );
-
-
-// $.post(plum.api_base+'photos', 
-//   { image_url: plum.dl_url, via: 'fb_send'},
-//   function(data) {
-//     var notification = webkitNotifications.createNotification(
-//       'icon1.png',  // icon url - can be relative
-//       'Photo added to Picplum'
-//     );
-// 
-//     // Then show the notification.
-//     notification.show();
-//     window.setInterval(function() {
-//       notification.cancel();
-//     }, 3500);
-// });
 
 function onRequest(request, sender, sendResponse) {
   // Show the page action for the tab that the sender (content script) was on.
@@ -85,7 +48,21 @@ function onRequest(request, sender, sendResponse) {
   sendResponse({});
 };
 
-// Listen for the content script to send a message to the background page.
+
+function getClickHandler() {
+  return function(info, tab) {
+    plum.dl_url = info.srcUrl;
+    add_photo(tab);
+  };
+};
+
+chrome.contextMenus.create({
+  "title" : "Send to Picplum",
+  "type" : "normal",
+  "contexts" : ["image"],
+  "onclick" : getClickHandler()
+});
+
 
 
 // Event Listeners 

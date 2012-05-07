@@ -18,7 +18,7 @@
      "content_scripts" : [
        {
          "matches" : [
-           "*://*.facebook.com/photo.php*"
+           "*://*.facebook.com/*"
          ],
          "js" : [
            "zepto.min.js",
@@ -30,7 +30,12 @@
     ],
   "manifest_version": 2,
   "page_action": {
-      "default_icon": "icon2.png", 
+      "default_icon": "16_picplum_icon.png", 
       "default_title": "Send this photo to Picplum"
-    }
+    },
+  "icons": { 
+    "16": "16_picplum_icon.png",
+    "48": "48_picplum_icon.png",
+    "128": "128_picplum_icon.png" 
+  }
 }
