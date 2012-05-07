@@ -11,7 +11,18 @@
   "permissions": [ 
       "tabs",
       "contextMenus",
-      "notifications"
+      "notifications",
+      "https://www.picplum.com/"
+    ],
+     "content_scripts" : [
+       {
+         "matches" : [
+           "*://*.facebook.com//photo.php*"
+         ],
+         "js" : ["contentscript.js"],
+         "run_at" : "document_end",
+         "all_frames" : false
+       }
     ],
   "manifest_version": 2,
   "page_action": {
