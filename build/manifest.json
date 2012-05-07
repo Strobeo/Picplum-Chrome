@@ -9,17 +9,21 @@
       ] 
     },
   "permissions": [ 
+      "https://www.picplum.com/",
+      "http://dodeja.mine.nu:3000/",
       "tabs",
       "contextMenus",
-      "notifications",
-      "https://www.picplum.com/"
+      "notifications"
     ],
      "content_scripts" : [
        {
          "matches" : [
-           "*://*.facebook.com//photo.php*"
+           "*://*.facebook.com/photo.php*"
          ],
-         "js" : ["contentscript.js"],
+         "js" : [
+           "zepto.min.js",
+           "contentscript.js"
+          ],
          "run_at" : "document_end",
          "all_frames" : false
        }
