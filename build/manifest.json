@@ -10,7 +10,6 @@
     },
   "permissions": [ 
       "https://www.picplum.com/",
-      "http://dodeja.mine.nu:3000/",
       "tabs",
       "contextMenus",
       "notifications"

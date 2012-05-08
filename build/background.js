@@ -4,7 +4,7 @@
 
 var plum = {
   // api_base: "https://www.picplum.com/api/1/"
-  api_base: "http://dodeja.mine.nu:3000/api/1/"
+  api_base: "https://www.picplum.com/api/1/"
 }
 
 
@@ -19,21 +19,31 @@ function checkForValidUrl(tabId, changeInfo, tab) {
 
 // add photo to Picplum
 function add_photo(tab){
-  $.post(plum.api_base+'photos', 
-    { image_url: plum.dl_url, via: 'web'},
-    function(data) {
-      var notification = webkitNotifications.createNotification(
-        plum.dl_url,
-        'Photo added to Picplum'
-      );
   
-      // Then show the notification.
-      notification.show();
-      window.setInterval(function() {
-        notification.cancel();
-      }, 3500);
-  });
+  var jqxhr = $.post(plum.api_base+'photos', { image_url: plum.dl_url, via: 'web'})
+      .success(function() { 
+        var notification = webkitNotifications.createNotification(
+          plum.dl_url,
+          'Photo added to Picplum'
+        );
 
+        // Then show the notification.
+        notification.show();
+        window.setInterval(function() {
+          notification.cancel();
+        }, 3500);
+      })
+      .error(function(error_data, textStatus, errorThrown) { 
+        alert("error"); 
+        console.log(error_data)
+        console.log(textStatus)
+        console.log(errorThrown)
+      })
+      .complete(function() { alert("complete"); });
+}
+
+function notify(payload, timeout){
+  
 }
 
 
