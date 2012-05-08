@@ -1,0 +1,39 @@
+{
+  "name": "Add to Picplum",
+  "version": "1.0",
+  "manifest_version": 2,
+  "background": { 
+    "scripts": [ 
+      "libs/jquery-1.7.2.min.js",
+      "build/background.js"
+    ] 
+  },
+  "permissions": [ 
+      "https://www.picplum.com/",
+      "tabs",
+      "contextMenus",
+      "notifications"
+    ],
+   "content_scripts" : [
+     {
+       "matches" : [
+         "*://*.facebook.com/*"
+       ],
+       "js" : [
+         "libs/zepto.min.js",
+         "build/contentscript.js"
+        ],
+       "run_at" : "document_end",
+       "all_frames" : false
+     }
+  ],
+  "page_action": {
+      "default_icon": "images/16_picplum_icon.png", 
+      "default_title": "Send this photo to Picplum"
+    },
+  "icons": { 
+    "16": "images/16_picplum_icon.png",
+    "48": "images/48_picplum_icon.png",
+    "128": "images/128_picplum_icon.png" 
+  }
+}

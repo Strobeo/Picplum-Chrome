@@ -3,6 +3,7 @@
 ## Build Requirements
 
 **Node:** `brew install nodejs`  
+**NPM:** `curl http://npmjs.org/install.sh | sh`
 **coffeescript:** `npm install -g coffee-script`  
 
 ## Build and watch
