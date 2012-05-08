@@ -6,12 +6,18 @@ class PicplumSend
     @chrome_events()
     @setup_context_menu()
     
-  checkForValidUrl: (tabId, changeInfo, tab) ->
-    chrome.pageAction.show(tabId) if tab.url.indexOf @fb_url > -1
+  checkForValidUrl: (tabId, changeInfo, tab) =>
+    chrome.pageAction.show(tabId) if tab.url.indexOf(@fb_url) > -1
   
-  content_msg: (request, sender, send_response) ->
+  content_msg: (request, sender, send_response) =>
     chrome.pageAction.show sender.tab.id
     
+    switch request.msg
+      when "facebook_image"
+        @download_url = request.href
+      when "send_button_click"
+        @add_photo(sender.tab)
+      
     # Set download URL
     @download_url = request.href
 
@@ -25,7 +31,7 @@ class PicplumSend
       noti.cancel()
     , timeout
   
-  getClickHandler: ->
+  getClickHandler: =>
     (info, tab) => 
       @download_url = info.srcUrl
       @add_photo(tab)
@@ -49,25 +55,25 @@ class PicplumSend
     # Message recieved from tab - Download url for Facebook imaage
     chrome.extension.onRequest.addListener @content_msg
   
-  add_photo: (tab) ->
-    thiz = @
-    post_image = $.post "https://www.picplum.com/api/1/photos", { image_url: @download_url, via: 'web'}
+  add_photo: (tab) =>
+    console.log(@download_url)
+    if @download_url
+      post_image = $.post "#{@api_base}/photos", { image_url: @download_url, via: 'web'}
 
-    post_image.success (data) => 
-      thiz.notify {img: thiz.fb_url, title: 'Photo added to Picplum', sub_title: ''}
+      post_image.success (data) => 
+        @notify {img: @fb_url, title: 'Photo added to Picplum', sub_title: ''}
 
-    post_image.error (error_data, textStatus, errorThrown) => 
-        console.log error_data
-        console.log textStatus
-        console.log errorThrown
-        if error_data.status is 401
-          thiz.notify {img: '', title: 'Please login to Picplum', sub_title: ''} 
-          chrome.tabs.create
-            'url':'https://www.picplum.com/login'
-            'selected':true
+      post_image.error (error_data, textStatus, errorThrown) => 
+          if error_data.status is 401
+            @notify {img: '', title: 'Please login to Picplum', sub_title: ''} 
+            chrome.tabs.create
+              'url':'https://www.picplum.com/login'
+              'selected':true
 
-    post_image.complete -> 
-      console.log 'complete'
+      post_image.complete -> 
+        console.log 'complete'
+  post_photo: () ->
+    
         
 chrome_send = new PicplumSend()
 
