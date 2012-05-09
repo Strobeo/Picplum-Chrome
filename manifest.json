@@ -15,16 +15,14 @@
       "notifications"
     ],
    "content_scripts" : [
-     {
-       "matches" : [
-         "*://*.facebook.com/*"
-       ],
-       "js" : [
-         "libs/zepto.min.js",
-         "build/contentscript.js"
-        ],
-       "run_at" : "document_end",
-       "all_frames" : false
+    {
+      "matches" : [
+        "*://*.facebook.com/*"
+      ],
+        "css": [ "css/main.css" ],
+        "js" : [ "libs/zepto.min.js", "build/contentscript.js" ],
+        "run_at" : "document_end",
+        "all_frames" : false
      }
   ],
   "page_action": {

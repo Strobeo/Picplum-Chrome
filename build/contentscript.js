@@ -11,6 +11,8 @@
 
     SendImage.prototype.fb_views_selectors = '.fbPhotoImage, .spotlight';
 
+    SendImage.prototype.loader_template = '<div id="picplum_loading_wrap"><img src="https://s3.amazonaws.com/picplum-prod-assets/loader.gif"><div id="loading_inner"></div></div>';
+
     SendImage.prototype.fb_views = {
       fbPhotoImage: {
         name: 'photo_page',
@@ -41,9 +43,30 @@
       this.watch_send_btn = __bind(this.watch_send_btn, this);
 
       this.add_fb_buttons = __bind(this.add_fb_buttons, this);
+
+      var _this = this;
       this.check_downloadlink();
       this.check_photo_url();
       this.watch_window();
+      this.insert_loader();
+      chrome.extension.onRequest.addListener(function(request, sender) {
+        console.log(request.msg);
+        switch (request.msg) {
+          case "loader_hide":
+            return _this.loading({
+              hide: true
+            });
+          case "loader_show":
+            return _this.loading({
+              msg: request.loader_msg
+            });
+          case 'loader_show_hide':
+            return _this.loading({
+              msg: request.loader_msg,
+              autohide: true
+            });
+        }
+      });
     }
 
     SendImage.prototype.check_downloadlink = function() {
@@ -61,7 +84,11 @@
           chrome.extension.sendRequest({
             msg: 'facebook_image',
             href: href
-          }, function(response) {});
+          }, function(response) {
+            return _this.loading({
+              hide: true
+            });
+          });
           return _this.add_fb_buttons();
         }
       });
@@ -106,11 +133,54 @@
     SendImage.prototype.watch_send_btn = function() {
       var _this = this;
       return $('.picplum_send_action').on('click', function() {
-        console.log('sned action');
         return chrome.extension.sendRequest({
           msg: 'send_button_click'
         }, function(response) {});
       });
+    };
+
+    SendImage.prototype.insert_loader = function() {
+      $('body').append(this.loader_template);
+      return $("#picplum_loading_wrap").click(function() {
+        return $(this).hide();
+      });
+    };
+
+    SendImage.prototype.get_image_meta = function() {
+      return $(this.fb_views_selectors).offset();
+    };
+
+    SendImage.prototype.loading = function(arg) {
+      var autohide, el, hide, image_meta, inner_el, msg, right_pos, top_pos, _ref, _ref1, _ref2;
+      image_meta = this.get_image_meta();
+      msg = (_ref = arg.msg) != null ? _ref : "Loading ...";
+      hide = (_ref1 = arg.hide) != null ? _ref1 : false;
+      autohide = (_ref2 = arg.autohide) != null ? _ref2 : false;
+      el = $("#picplum_loading_wrap");
+      inner_el = $("#loading_inner", el);
+      top_pos = image_meta.top;
+      right_pos = $(window).width() - (image_meta.width + image_meta.left);
+      el.css({
+        top: "" + (top_pos + 10) + "px",
+        right: "" + (right_pos + 10) + "px"
+      });
+      if (hide) {
+        return el.hide();
+      } else {
+        if (el.css("display") === 'none') {
+          inner_el.html(msg);
+          el.show();
+        } else {
+          if (msg !== inner_el.html()) {
+            inner_el.html(msg);
+          }
+        }
+        if (autohide) {
+          return window.setTimeout(function() {
+            return el.hide();
+          }, 1500);
+        }
+      }
     };
 
     return SendImage;

@@ -84,16 +84,19 @@
         _this = this;
       console.log(this.download_url);
       if (this.download_url) {
+        chrome.tabs.sendRequest(tab.id, {
+          msg: 'loader_show',
+          loader_msg: 'Sending photo to Picplum'
+        }, function() {});
         post_image = $.post("" + this.api_base + "/photos", {
           image_url: this.download_url,
           via: 'web'
         });
         post_image.success(function(data) {
-          return _this.notify({
-            img: _this.fb_url,
-            title: 'Photo added to Picplum',
-            sub_title: ''
-          });
+          return chrome.tabs.sendRequest(tab.id, {
+            msg: 'loader_show_hide',
+            loader_msg: 'Photo sent to Picplum!'
+          }, function() {});
         });
         post_image.error(function(error_data, textStatus, errorThrown) {
           if (error_data.status === 401) {
@@ -108,9 +111,7 @@
             });
           }
         });
-        return post_image.complete(function() {
-          return console.log('complete');
-        });
+        return post_image.complete(function() {});
       }
     };
 

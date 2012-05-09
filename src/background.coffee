@@ -58,10 +58,12 @@ class PicplumSend
   add_photo: (tab) =>
     console.log(@download_url)
     if @download_url
+      chrome.tabs.sendRequest(tab.id, {msg: 'loader_show', loader_msg: 'Sending photo to Picplum'}, () ->)
       post_image = $.post "#{@api_base}/photos", { image_url: @download_url, via: 'web'}
 
       post_image.success (data) => 
-        @notify {img: @fb_url, title: 'Photo added to Picplum', sub_title: ''}
+        # @notify {img: @fb_url, title: 'Photo added to Picplum', sub_title: ''}
+        chrome.tabs.sendRequest(tab.id, {msg: 'loader_show_hide', loader_msg: 'Photo sent to Picplum!'}, () ->)
 
       post_image.error (error_data, textStatus, errorThrown) => 
           if error_data.status is 401
@@ -71,7 +73,8 @@ class PicplumSend
               'selected':true
 
       post_image.complete -> 
-        console.log 'complete'
+        # chrome.tabs.sendRequest(tab.id, {msg: 'loader_hide'}, () ->)
+        
   post_photo: () ->
     
         
